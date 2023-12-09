@@ -17,6 +17,7 @@ int getNumAndMoveCnt(const std::string &str, int &cnt) {
 struct Card {
   std::vector<int> winning;
   std::vector<int> ours;
+  int cnt = 1;
   Card(std::string str) {
     int cardStart = 0;
     for(int i = 0; i < str.length(); ++i) {
@@ -55,6 +56,19 @@ int countIntersecting(const std::vector<int> &first, const std::vector<int> &sec
   return cnt;
 }
 
+int countCards(std::vector<Card> &cards) {
+  int res = 0;
+  int s = 0;
+  for(int i = 0; i < cards.size(); ++i) {
+    s = countIntersecting(cards[i].winning, cards[i].ours);
+    for(int j = 1; j <= s; ++j) {
+      cards[i+j].cnt += cards[i].cnt;
+    }
+    res += cards[i].cnt;
+  }
+  return res;
+}
+
 int main(void)
 {  
   std::ifstream in;
@@ -66,26 +80,28 @@ int main(void)
     cards.push_back(Card(card));
   }
 
-  for(int i = 0; i < cards.size(); ++i) {
-    std::cout << "Card num " << i+1 << "\n Winning: ";
-    for(int j = 0; j < cards[i].winning.size(); ++j) {
-      std::cout << cards[i].winning[j] << ' ';
-    }
-    std::cout << "\n Ours: ";
-    for(int j = 0; j < cards[i].ours.size(); ++j) {
-      std::cout << cards[i].ours[j] << ' ';
-    }
-    std::cout << std::endl;
-  }
+  cards.pop_back();
+  // for(int i = 0; i < cards.size(); ++i) {
+  //   std::cout << "Card num " << i+1 << "\n Winning: ";
+  //   for(int j = 0; j < cards[i].winning.size(); ++j) {
+  //     std::cout << cards[i].winning[j] << ' ';
+  //   }
+  //   std::cout << "\n Ours: ";
+  //   for(int j = 0; j < cards[i].ours.size(); ++j) {
+  //     std::cout << cards[i].ours[j] << ' ';
+  //   }
+  //   std::cout << std::endl;
+  // }
 
   int sum = 0;
   for(int i = 0; i < cards.size(); ++i) {
     int s = countIntersecting(cards[i].winning, cards[i].ours);
     sum += pow(2, s-1);
-
   }
   std::cout << "First part sum " << sum << std::endl;
   
+  sum = countCards(cards);
+  std::cout << "Second part sum " << sum << std::endl;
 
   return 0;
 }
