@@ -1,3 +1,4 @@
+.gitignore
 ownerproof
 */*.out
 */*.txt
